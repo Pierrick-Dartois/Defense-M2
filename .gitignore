@@ -1,0 +1,12 @@
+*.pdf
+*.aux
+*.log
+*.blg
+*.out
+*.synctex.gz
+*.bbl
+*.toc
+*.snm
+*.nav
+
+*~
