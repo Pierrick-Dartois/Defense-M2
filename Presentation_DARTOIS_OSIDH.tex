@@ -26,6 +26,17 @@
    %\end{frame}
 %}
 
+\AtBeginSection[]{
+  \begin{frame}
+  \vfill
+  \centering
+  \begin{beamercolorbox}[sep=8pt,center,shadow=true,rounded=true]{title}
+    \usebeamerfont{title}\insertsectionhead\par%
+  \end{beamercolorbox}
+  \vfill
+  \end{frame}
+}
+
 \usepackage{graphicx} 
 
 \usetheme{Warsaw}
@@ -197,9 +208,9 @@ Cognitive computing
 
 \end{frame}
 
-\subsection{Contextualization of OSIDH}
+%\subsection{Contextualization of OSIDH}
 
-\subsubsection{Post quantum and isogeny based cryptography}
+\subsection{Post quantum and isogeny based cryptography}
 
 \begin{frame}
 \textbf{Quantum computers are a threat to current cryptography}
@@ -286,7 +297,7 @@ Cognitive computing
 
 \end{frame}
 
-\subsubsection{Cryptographic group actions and Diffie-Hellman key-exchange}
+\subsection{Cryptographic group actions and Diffie-Hellman key-exchange}
 
 
 \begin{frame}
@@ -356,7 +367,7 @@ h\cdot x_0 \ar[r]^{g} & (gh)\cdot x_0
 \end{frame}
 %Show cryptographic group action, Couveignes cryptosystem, CSIDH, OSIDH.
 
-\section{Introduction to OSIDH}
+\section{Mathematical framework of OSIDH}
 
 \subsection{Orientations}
 
@@ -875,7 +886,7 @@ with $F_i:=[\mf{a}\cap \mO_i]\cdot E_i$ for all $i\in\i{0}{n}$, one can recover 
 \item Knowing $\mf{a}_i\subseteq \mO_K$, such that $[\mf{a}_i\cap\mO_i]=[\mf{a}\cap \mO_i]$, we get:
 \[[\mf{a}_{i+1}\cap\mO_{i+1}]:=[\mf{a}\cap \mO_{i+1}]=[\mf{a}_i\cap\mO_{i+1}]\cdot[\mf{b}]\]
 with $[\mf{b}]\in\ker(\Cl(\mO_{i+1})\relbar\joinrel\twoheadrightarrow\Cl(\mO_{i}))$ and:
-\[[\mf{a}_i\cap\mO_{i+1}]\cdot[\mf{b}]\cdot E_{i+1}=F_i\]
+\[[\mf{a}_i\cap\mO_{i+1}]\cdot[\mf{b}]\cdot E_{i+1}=F_{i+1}\]
 \end{itemize}
 
 \end{frame}
@@ -895,7 +906,7 @@ with $[\mf{b}]\in\ker(\Cl(\mO_{i+1})\relbar\joinrel\twoheadrightarrow\Cl(\mO_{i}
 \end{array}\right.\]
 
 \item So we should test if:
-\[[\mf{a}_i\cap\mO_{i+1}]\cdot[\mf{b}]\cdot E_{i+1}=F_i\]
+\[[\mf{a}_i\cap\mO_{i+1}]\cdot[\mf{b}]\cdot E_{i+1}=F_{i+1}\]
 for at most $\ell+1$ values of $[\mf{b}]$.
 \end{itemize}
 
@@ -986,12 +997,216 @@ E_{A,n} \ar[u]^{q_2} \ar[r]^{q_1} & [\mf{q}_1]\cdot E_{A,n} \ar[u] \ar[r] & \cdo
 
 \subsection{Recovering the chain with oriented endomorphisms}
 
+\begin{frame}
+\textbf{Recovering the chain with oriented endomorphisms}
+
+\vspace{0.5cm}
+
+\begin{itemize}
+\item Given $(E_i,\iota_i)_{i}$ and $(F_i,\iota'_i)_{i}:=[\mf{a}]\cdot(E_i,\iota_i)_{i}$, we can recover the secret $[\mf{a}]\in\Cl(\mO_n)$.
+
+\pause
+
+\item \textbf{Problem:} recover $(F_i,\iota_i)_{i}$ with the knowledge of:
+\[[\mfq_j]^{-r}\cdot F_{n}\longrightarrow \cdots\longrightarrow [\mfq_j]^{r}\cdot F_{n} \quad (1\leq j\leq t)\]
+
+\pause
+
+\item Assume that we know a $K$-oriented endomorphism $\iota'_n(\beta)\in\End(F_n)$ for some known value $\beta\in\mO_n\setminus\mO_{n+1}$.
+
+\pause
+
+\item Set $\mO_K:=\Z[\theta]$ and $\beta:=a+b\ell^n\theta$ with $b\wedge\ell=1$.
+
+\item We know $\iota'_n(a)=[a]$ so we know $\iota'_n(b\ell^n\theta)$.
+\end{itemize}
+
+\pause
+
+\begin{lemma}
+$\ker(\iota'_n(b\ell^n\theta))\cap F_n[\ell]=\ker(\widehat{\varphi}'_{n-1})$, with $\varphi'_{n-1}:F_{n-1}\longrightarrow F_n$.
+\end{lemma}
+
+\end{frame}
+
+\begin{frame}
+\textbf{Recovering the chain with oriented endomorphisms}
+
+\vspace{0.5cm}
+
+\[\xymatrix{
+ 										      &                     &  & &\\
+[\mf{q}_j]^{-r}\cdot F_n \ar[r] & \cdots \ar[r]& F_n \ar[r] & \cdots \ar[r]& [\mf{q}_j]^r\cdot F_n\\
+}\]
+\end{frame}
+
+\begin{frame}
+\textbf{Recovering the chain with oriented endomorphisms}
+
+\vspace{0.5cm}
+
+\[\xymatrix{
+ 										      &                     & F_{n-1} \ar[d]_{\varphi'_{n-1}} & &\\ 
+[\mf{q}_j]^{-r}\cdot F_n \ar[r] & \cdots \ar[r]& F_n \ar@(r,d)[]^{\iota'_n(\beta)} \ar[r] & \cdots \ar[r]& [\mf{q}_j]^r\cdot F_n\\
+}\]
+\end{frame}
+
+\begin{frame}
+\textbf{Recovering the chain with oriented endomorphisms}
+
+\vspace{0.5cm}
+
+\[\xymatrix{
+ [\mf{q}_j]^{-r}\cdot F_{n-1} \ar[r] \ar[d] &  \cdots \ar[r] & F_{n-1} \ar[d]_{\varphi'_{n-1}} \ar[r] &\cdots \ar[r] & [\mf{q}_j]^r\cdot F_{n-1} \ar[d]\\ 
+[\mf{q}_j]^{-r}\cdot F_n \ar[r] & \cdots \ar[r]& F_n \ar@(r,d)[]^{\iota'_n(\beta)} \ar[r] & \cdots \ar[r]& [\mf{q}_j]^r\cdot F_n\\
+}\]
+\end{frame}
+
 \subsection{A lattice reduction to find oriented endomorphisms}
+
+\begin{frame}
+\textbf{A lattice reduction to find oriented endomorphisms}
+
+\vspace{0.5cm}
+
+\begin{itemize}
+\item We look for $\beta\in \mO_n\setminus\mO_{n+1}$ such that $\iota'_n(\beta)$ is easy to compute.
+
+\item We look for:
+\[\beta\mO_n=\prod_{j=1}^t (\mf{q}_j\cap\mO_n)^{e_j}\]
+with $e_1,\cdots, e_t\in\i{-2r}{2r}$, so that  $\iota'_n(\beta)$ can be inferred from:
+\[[\mfq_j]^{-r}\cdot F_{n}\longrightarrow \cdots\longrightarrow [\mfq_j]^{r}\cdot F_{n} \quad (1\leq j\leq t)\]
+
+\item We look for short vectors (of infinity norm $\leq 2r$) in the relations lattice:
+\[L:=\left\{(e_1,\cdots,e_t)\in\Z^t \ \middle| \ \prod_{j=1}^t [\mf{q}_j\cap\mO_n]^{e_j}=[1] \quad\mbox{in } \Cl(\mO_n)\right\}\]
+\end{itemize}
+\end{frame}
+
+\begin{frame}
+\textbf{A lattice reduction to find oriented endomorphisms}
+
+\vspace{0.3cm}
+
+\begin{itemize}
+\item The relations lattice $L$ is easy to compute because computing discrete logarithms is easy in $\Cl(\mO_n)$.
+
+\pause 
+
+\begin{lemma}
+Heuristically, we have:
+\[\(1-\frac{\log\log(t)}{t}\)\frac{|\Cl(\mO_n)|^{1/t}}{2}\leq \lambda_1^{(\infty)}(L)\leq \(1+\frac{\log\log(t)}{t}\)\frac{|\Cl(\mO_n)|^{1/t}}{2}\]
+\end{lemma}
+
+\pause 
+
+\item If the key space:
+\[\left\{\prod_{j=1}^t [\mf{q}_j\cap\mO_n]^{e_j} \ \middle| \ e_1,\cdots, e_t\in\i{-r}{r} \right\}\]
+covers $\Cl(\mO_n)$, then $|\Cl(\mO_n)|\leq (2r+1)^t$ and:
+\[\lambda_1^{(\infty)}(L)<2r\]
+
+\item Finding a short vector is efficient with BKZ.
+\end{itemize}
+\end{frame}
 
 \subsection{Implementation of our attack}
 
+\begin{frame}
+\textbf{Implementation with toy parameters:} $\ell=2$, $n=28$,$t=10$, $r=3$ and $K=\Q(i)$.
+
+\begin{columns}[t]
+\column{.5\textwidth}
+\begin{figure}
+\includegraphics[width=5.5cm]
+{Protocol_execution.png} 
+\end{figure}
+
+
+\column{.5\textwidth}
+
+\begin{figure}
+\includegraphics[width=5.5cm]
+{Attack_execution.png} 
+
+\end{figure}
+\end{columns}
+
+\end{frame}
+
+\begin{frame}
+\textbf{Can we upgrade the attack?} 
+
+\vspace{0.5cm}
+
+\textbf{Testing lattice reduction:} $\ell=2$, $n=256$,$t=74$, $r=5$ and $K=\Q(i)$.
+
+\begin{itemize}
+\item Relations lattice computation: 2h31.
+\item Could have been reduced to 1h04 (knowing that $\Cl(\mO_n)$ is cyclic and generated by $\mf{q}_1$).
+\pause
+\item Finding a short vector with BKZ: 0.5s.
+\item Shortest vector:
+\begin{align*}u:=&(-4, 1, 4, 4, -3, 1, 3, 5, 5, 2, 9, 5, 3, 5, -1, 5, -7, 2, -3, 5, 3, -3, 2,\\
+&0, 2, 2, 0, -6, -2, -2, -9, 0, -6, 4, 1, -2, 1, 0, 7, 6, -2, -5, -3, -4, \\
+&6, -1, 0, -3,-2, -3, 2, 6, 0, 6, -8, -3, -2, -3, 4, 4, -3, -5, 1, 0, \\
+&0, 1, -1, 0, 5, -1, -1, 1, -2, -4)\end{align*}
+$\|u\|_\infty=9<2r$.
+\end{itemize}
+\end{frame}
+
 \subsection{Countermeasures}
 
+\begin{frame}
+\textbf{Countermeasures:}
+
+\vspace{0.5cm}
+\begin{itemize}
+\item \textbf{Method 1:} increase $t$ to make it computationally hard to find short vectors.
+
+\item \textbf{Method 2:} make sure that $(2r+1)^t\ll |\Cl(\mO_n)|$, so that:
+\[ \lambda_1^{(\infty)}(L)\geq \(1-\frac{\log\log(t)}{t}\)\frac{|\Cl(\mO_n)|^{1/t}}{2}> 2r\]
+\pause 
+\item Drawbacks of method 1:
+\begin{itemize}
+\item Increases the protocol complexity by a lot.
+\item Diversity: the security reduces to a lattice problem.
+\end{itemize}
+\pause
+\item Drawback of method 2: reduces the key space:
+\[\left\{\prod_{j=1}^t [\mf{q}_j\cap\mO_n]^{e_j} \ \middle| \ e_1,\cdots, e_t\in\i{-r}{r} \right\}\]
+This impedes other cryptographic constructions.
+\end{itemize}
+\end{frame}
+
 \section{Conclusion}
+
+\begin{frame}
+\textbf{To sum up:}
+
+\vspace{0.3cm}
+
+\begin{itemize}
+\item A "good idea" based on cryptographic group actions.
+
+\item But inefficient in practice.
+
+\item And not safe even against classical computers.
+
+\end{itemize}
+
+\vspace{0.5cm}
+\pause 
+
+\textbf{Future works:}
+
+\vspace{0.3cm}
+
+\begin{itemize}
+\item Improve the protocol implementation to upgrade the attack.
+
+\item Try to generalize our method to find a complete attack.
+
+\item Or look for other constructions with the OSIDH framework that can work with a small key space. 
+\end{itemize}
+\end{frame}
 
 \end{document}
