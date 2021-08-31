@@ -11,7 +11,7 @@
 \usepackage{pgfplots}  
 
 \institute{IBM Research Zurich\\ Université de Rennes 1}
-\title{On Oriented Supersingular Isogeny Diffie Hellman}
+\title[On Oriented Supersingular Isogeny Diffie-Hellman]{On Oriented Supersingular Isogeny Diffie-Hellman (Col\`{o} and Kohel, 2019)}
 \author{Pierrick Dartois \\ Under the supervision of Luca De Feo}
 \titlegraphic{\includegraphics[width=3.5cm]{logo_IBM.png}\hspace*{1.75cm}~%
    \includegraphics[width=3.5cm]{logo_Rennes1.jpg}
@@ -35,6 +35,13 @@
   \end{beamercolorbox}
   \vfill
   \end{frame}
+}
+
+\addtobeamertemplate{navigation symbols}{}{%
+    \usebeamerfont{footline}%
+    \usebeamercolor[fg]{footline}%
+    \hspace{1em}%
+    \insertframenumber/\inserttotalframenumber
 }
 
 \usepackage{graphicx} 
@@ -178,6 +185,8 @@ Security
 \vspace{0.1cm}
 
 {\setstretch{0.5} {\footnotesize Post-quantum cryptography, blockchain, cybersecurity, identity and data governance...}\\}
+
+
 \end{figure}
 
 
@@ -203,6 +212,10 @@ Cognitive computing
 \vspace{0.1cm}
 
 {\setstretch{0.5}{\footnotesize Computational biology and medicine, supercomputing, predictive maintenance...}\\}
+
+\vspace{0.05 cm}
+
+{\tiny Pictures by IBM}
 \end{figure}
 \end{columns}
 
@@ -216,7 +229,7 @@ Cognitive computing
 \textbf{Quantum computers are a threat to current cryptography}
 
 \begin{itemize}
-\item Shor's algorithm (1995) can compute discrete logarithms and factor integers on a quantum computer.
+\item Shor's algorithm (1995) can compute discrete logarithms and factor integers in polynomial time on a quantum computer.
 
 \item All current public key cryptography based on these problems may become unsafe (\sout{RSA} and \sout{El Gamal}).
 \end{itemize}
@@ -226,7 +239,7 @@ Cognitive computing
 
 \begin{figure}
 \includegraphics[width=3cm]{quantum_computer.png} 
-
+{\tiny Picture by IBM}
 \end{figure}
 
 
@@ -234,7 +247,10 @@ Cognitive computing
 
 \begin{figure}
 \includegraphics[width=6cm]{hammer.jpeg} 
+
+{\tiny Picture by Robert Samuel Hanson}
 \end{figure}
+
 
 \end{columns}
 
@@ -256,15 +272,17 @@ Cognitive computing
 \begin{axis}  
 [  
     ybar,  
+    ymode=log,
     enlargelimits=0.15,  
-    ylabel={Communications PK+cipher (KB)}, % the ylabel must precede a # symbol.  
+    ylabel={Communications PK+cipher (bytes)}, % the ylabel must precede a # symbol.  
     %xlabel={},  
     symbolic x coords={Kyber, NTRU, McEliece, Saber, SIKE}, % these are the specification of coordinates on the x-axis.  
-    xtick=data,  
-     nodes near coords, % this command is used to mention the y-axis points on the top of the particular bar.  
+    xtick=data, 
+    point meta=rawy,
+     nodes near coords={\pgfmathprintnumber[sci,precision=1]{\pgfplotspointmeta}}, % this command is used to mention the y-axis points on the top of the particular bar.  
     nodes near coords align={vertical},  
     ]  
-\addplot coordinates {(Kyber,1.568) (NTRU,1.398) (McEliece,261) (Saber,1.408) (SIKE,0.676) };  
+\addplot coordinates {(Kyber,1568) (NTRU,1398) (McEliece,261248) (Saber,1408) (SIKE,676) };  
   
 \end{axis}  
 \end{tikzpicture} 
@@ -276,15 +294,17 @@ Cognitive computing
 \begin{axis}  
 [  
     ybar,  
-    enlargelimits=0.15,  
-    ylabel={Time encaps+decaps (M cycles)}, % the ylabel must precede a # symbol.  
+    ymode=log,
+    enlargelimits=0.2,  
+    ylabel={Time encaps+decaps (cycles)}, % the ylabel must precede a # symbol.  
     %xlabel={},  
     symbolic x coords={Kyber, NTRU, McEliece, Saber, SIKE}, % these are the specification of coordinates on the x-axis.  
     xtick=data,  
-     nodes near coords, % this command is used to mention the y-axis points on the top of the particular bar.  
+    point meta=rawy,
+     nodes near coords={\pgfmathprintnumber[sci,precision=1]{\pgfplotspointmeta}}, % this command is used to mention the y-axis points on the top of the particular bar.  
     nodes near coords align={vertical},  
     ]  
-\addplot[color=red,fill=red!50] coordinates {(Kyber,0.079772) (NTRU,0.101357) (McEliece,0.179095) (Saber,0.124) (SIKE,20) };  
+\addplot[color=red,fill=red!50] coordinates {(Kyber,79772) (NTRU,101357) (McEliece,179095) (Saber,124000) (SIKE,20024000) };  
   
 \end{axis}  
 \end{tikzpicture}
@@ -292,21 +312,21 @@ Cognitive computing
 
 \end{columns}
 
-\caption{Total communication size (public key and cipher) and time performance (encapsulation and decapsulation) of 5 NIST round 3 key encapsulation mechanisms candidates.}
+\caption{Total communication size (public key and cipher) and time performance (encapsulation and decapsulation) of 5 NIST round 3 key encapsulation mechanisms.}
 \end{figure}
 
 \end{frame}
 
-\subsection{Cryptographic group actions and Diffie-Hellman key-exchange}
+\subsection{Cryptographic group actions and Diffie-Hellman key exchange}
 
 
 \begin{frame}
-\textbf{Cryptographic group action}
+\textbf{Cryptographic group action}\footnote[frame]{Brassard and Yung (1991), Couveignes (2006).}
 
 \vspace{0.5cm}
 
 \begin{itemize}
-\item $G$: a group.
+\item $G$: an abelian group.
 \item $X$: a set ($|X|=|G|$).
 \pause 
 \item $\cdot : G\times X\longrightarrow X$ a \emph{transitive} and \emph{faithful} group action:
@@ -351,10 +371,12 @@ h\cdot x_0 \ar[r]^{g} & (gh)\cdot x_0
   % Alice
   \node (Alice) at (0,0) {\includegraphics[height=2cm]{Alice.jpg}};
   \node (label) at (0,-1.5) {Alice};
+  \node (label) at (0,-1.8) {{\tiny By Gallery Yopriceville}};
   
   % Bob
   \node (Bob) at (4,0) {\includegraphics[height=2cm]{Bob.jpg}};
   \node (label) at (4,-1.5) {Bob};
+  \node (label) at (4,-1.8) {{\tiny By Michael Ochs}};
 
 % Messages
 \draw[->,thick] ($(Alice)+(0.5,0.25)$) -- ($(Bob)+(-0.75,0.25)$) node [pos=0.5,above,font=\footnotesize] {$g\cdot x_0$};
@@ -382,7 +404,7 @@ h\cdot x_0 \ar[r]^{g} & (gh)\cdot x_0
 \item $E/\F_q$: elliptic curve.
 \end{itemize}
 
-\begin{definition}
+\begin{definition}[Col\`{o} and Kohel]
 A $K$-\emph{orientation} of $E$ is an embedding: 
 \[\iota : K\hookrightarrow \End(E)\otimes_\Z\Q.\]
 
@@ -414,7 +436,7 @@ It is \emph{primitive} if $\iota(\mO)=\End(E)\cap\iota(K)$.
 \[\forall \alpha\in K,  \quad \varphi_*(\iota)(\alpha)=\frac{1}{\deg(\varphi)}\varphi\circ \iota(\alpha)\circ \widehat{\varphi}.\]
 \end{itemize}
 
-\begin{definition}
+\begin{definition}[Col\`{o} and Kohel]
 Let $(E, \iota_E)$ and $(F,\iota_F)$ be two $K$-oriented elliptic curves.  
 
 An isogeny $\varphi : E\longrightarrow F$ is $K$-\emph{oriented} if $\varphi_*(\iota_E)=\iota_F$.  
@@ -429,6 +451,9 @@ We denote this by $\varphi : (E, \iota_E)\longrightarrow(F,\iota_F)$.
 
 \vspace{0.5cm}
 
+\begin{columns}[t]
+\column{.51\textwidth}
+
 \begin{itemize}
 \item $\varphi : (E, \iota_E)\longrightarrow(F,\iota_F)$, a $K$-oriented isogeny.
 \item $\mO:=\iota_E^{-1}(\End(E))$.
@@ -440,9 +465,35 @@ We denote this by $\varphi : (E, \iota_E)\longrightarrow(F,\iota_F)$.
 \item If $\mO\supseteq\mO'$, then $\varphi$ is \emph{descending}.
 \end{itemize}
 
+\column{.49\textwidth}
+
+\definecolor{ffqqqq}{rgb}{1,0,0}
+\definecolor{qqqqff}{rgb}{0,0,1}
+\begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1cm,y=1cm,scale=0.7]
+\clip(-3.5,-2.5) rectangle (3.5,1);
+\draw [->,line width=1pt] (-1,0) -- (1,0);
+\draw [->,line width=1pt,color=qqqqff] (-2,-2) -- (-1,0);
+\draw [->,line width=1pt,color=ffqqqq] (1,0) -- (2,-2);
+\begin{scriptsize}
+\draw [fill=black] (-1,0) circle (2.5pt);
+\draw[color=black] (-1.2,0.2) node {$\mathcal{O}$};
+\draw [fill=black] (1,0) circle (2.5pt);
+\draw[color=black] (1.2,0.2) node {$\mathcal{O}$};
+\draw [fill=black] (-2,-2) circle (2.5pt);
+\draw[color=black] (-2,-2.3) node {$\mathcal{O}'\subseteq\mathcal{O}$};
+\draw [fill=black] (2,-2) circle (2.5pt);
+\draw[color=black] (2,-2.3) node {$\mathcal{O}'\subseteq\mathcal{O}$};
+\draw[color=black] (0,0.3) node {horizontal};
+\draw[color=qqqqff] (-2.5,-1) node {ascending};
+\draw[color=ffqqqq] (2.5,-1) node {descending};
+\end{scriptsize}
+\end{tikzpicture}
+
+\end{columns}
+
 \pause
 
-\begin{proposition}
+\begin{proposition}[Kohel]
 If $\ell:=\deg(\varphi)$ is prime, then: 
 \begin{description}
 \item[(i)] $\varphi$ is always ascending, horizontal or descending.
@@ -456,49 +507,53 @@ If $\ell:=\deg(\varphi)$ is prime, then:
 
 \subsection{Oriented supersingular isogeny graphs}
 
+%\begin{frame}
+%\textbf{$K$-oriented supersingular $\ell$-isogeny graphs}
+%\vspace{0.5cm}
+%\begin{itemize}
+%\item $\ell$ and $p$ distinct prime numbers.
+%\item $p$ does not split in $K$.
+%\item \textbf{Vertices:} $K$-oriented supersingular elliptic curves defined over $\F_{p^2}$ up to $K$-oriented isomorphism.
+%\item \textbf{Edges:} $K$-oriented isogenies of degree $\ell$.
+%\end{itemize}
+
+%\end{frame}
+
+%\begin{frame}
+
+%\textbf{The volcano structure}
+
+%\vspace{0.5cm}
+
+%\begin{proposition}[Kohel]
+%Let $(E,\iota)$ be a supersingular primitively $\mO$-oriented elliptic curve and $\Delta_K:=\disc(K)$. Then:
+
+%\begin{description}
+%\item[(i)] If $\ell\nmid [\mO_K:\mO]$, among the $\ell$-isogenies with origin $(E,\iota)$:
+%\begin{itemize}
+%\item $1+\(\frac{\Delta_K}{\ell}\)$ are horizontal;
+%\item $1/[\mO^\times:(\Z+\ell\mO)^\times]\(\ell-\(\frac{\Delta_K}{\ell}\)\)$ are descending;
+%\item none of them are ascending.
+%\end{itemize}
+
+%\item[(ii)] If $\ell|[\mO_K:\mO]$, among the $\ell$-isogenies with origin $(E,\iota)$:
+%\begin{itemize}
+%\item none are horizontal;
+%\item $\ell$ are descending;
+%\item one of them are ascending.
+%\end{itemize}
+%\end{description}
+%\end{proposition}
+
+%\textbf{N.B.} These isogenies are considered up to $K$-oriented isomorphism.
+
+%\end{frame}
+
 \begin{frame}
+
 \textbf{$K$-oriented supersingular $\ell$-isogeny graphs}
-\vspace{0.5cm}
-\begin{itemize}
-\item $\ell$ and $p$ distinct prime numbers.
-\item $p$ does not split in $K$.
-\item \textbf{Vertices:} $K$-oriented supersingular elliptic curves defined over $\F_{p^2}$ up to $K$-oriented isomorphism.
-\item \textbf{Edges:} $K$-oriented isogenies of degree $\ell$.
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}
-
-\textbf{The volcano structure}
 
 \vspace{0.5cm}
-
-\begin{proposition}[Kohel]
-Let $(E,\iota)$ be a supersingular primitively $\mO$-oriented elliptic curve and $\Delta_K:=\disc(K)$. Then:
-
-\begin{description}
-\item[(i)] If $\ell\nmid [\mO_K:\mO]$, among the $\ell$-isogenies with origin $(E,\iota)$:
-\begin{itemize}
-\item $1+\(\frac{\Delta_K}{\ell}\)$ are horizontal;
-\item $1/[\mO^\times:(\Z+\ell\mO)^\times]\(\ell-\(\frac{\Delta_K}{\ell}\)\)$ are descending;
-\item none of them are ascending.
-\end{itemize}
-
-\item[(ii)] If $\ell|[\mO_K:\mO]$, among the $\ell$-isogenies with origin $(E,\iota)$:
-\begin{itemize}
-\item none are horizontal;
-\item $\ell$ are descending;
-\item one of them are ascending.
-\end{itemize}
-\end{description}
-\end{proposition}
-
-\textbf{N.B.} These isogenies are considered up to $K$-oriented isomorphism.
-
-\end{frame}
-
-\begin{frame}
 
 \textbf{Example:} $K=\Q(i)$, $\ell=2$, $p=79$,  $\F_{79^2}=\F_{79}[a]$ with $a^2-a+3=0$.
 
@@ -538,6 +593,7 @@ Let $(E,\iota)$ be a supersingular primitively $\mO$-oriented elliptic curve and
 \draw [line width=1pt] (2.2379689093048514,-2.18267675879613)-- (2.8168942423162138,-2.7623610269693826);
 \draw [line width=1pt] (3.1965297683390395,-3.2266628557055688)-- (3.5002064693248105,-3.700000071049312);
 \draw [line width=1pt] (2.833538103582579,-3.249580522158913)-- (2.5028570132903156,-3.7000136045167067);
+\draw [shift={(-0.020790003865610317,0.3591706988131075)},line width=1pt]  plot[domain=-0.5904004657771633:3.8476307905471328,variable=\t]({1*0.3052422908406379*cos(\t r)+0*0.3052422908406379*sin(\t r)},{0*0.3052422908406379*cos(\t r)+1*0.3052422908406379*sin(\t r)});
 \begin{scriptsize}
 \draw[color=black] (3.5,-4) node {23a+21};
 \draw[color=black] (0,0) node {69};
@@ -616,7 +672,7 @@ Let $(E,\iota)$ be a supersingular primitively $\mO$-oriented elliptic curve and
 \begin{itemize}
 \item $\SS_K(p)$: set of $K$-oriented supersingular elliptic curves over $\F_{p^2}$ up to $K$-oriented isomomorphism.
 \item $\SS(p)$: set of supersingular elliptic curves over $\F_{p^2}$ up to isomomorphism (supersingular $j$-invariants).
-\item Unfortunatelly, the \emph{forgetful map}:
+\item Unfortunately, the \emph{forgetful map}:
 \[(E,\iota)\in\SS_K(p)\longmapsto E\in\SS(p)\]
 is not injective.
 \end{itemize}
@@ -633,7 +689,7 @@ is not injective.
 \item $\SS_{\mO}(p)$: set of $\mO$-oriented supersingular elliptic curves over $\F_{p^2}$ up to $K$-oriented isomomorphism.
 \end{itemize}
 
-\begin{theorem}
+\begin{theorem}[Col\`{o} and Kohel]
 If $p>|\disc(\mO)|$, then the forgetful map:
 \[(E,\iota)\in\SS_{\mO}(p)\longmapsto E\in\SS(p)\]
 is injective.
@@ -666,7 +722,7 @@ with:
 
 \vspace{0.5cm}
 
-\begin{theorem}
+\begin{theorem}[Onuki]
 The ideal class group action $\Cl(\mO)\times\SS_{\mO}^{pr}(p)\longrightarrow \SS_{\mO}^{pr}(p)$ is well-defined, \textbf{faithful} but \textbf{not transitive}. Actually, there are two orbits.
 \end{theorem}
 
@@ -704,75 +760,93 @@ such that $\psi_i : E_i\longrightarrow F_i$ is a $K$-oriented $q$-isogeny for al
 
 \end{frame}
 
-\begin{frame}
-\textbf{A useful $\ell$-ladder}
+%\begin{frame}
+%\textbf{A useful $\ell$-ladder}
 
-\vspace{0.5cm}
+%\vspace{0.5cm}
+
+%\begin{itemize}
+%\item We set $\mO_i:=\Z+\ell^i\mO_K$ for all $i\in\i{0}{n}$.
+%\item $q$: a splitting prime in $K$.
+%\item $\mf{q}\subseteq \mO_K$: a prime ideal lying above $q$. 
+%\item A descending $\ell$-isogeny chain:
+%\[\xymatrix{
+%E_0 \ar[r]^{\varphi_0} & E_1 \ar[r]^{\varphi_{1}}& \cdots \ar[r]^{\varphi_{n-2}} & E_{n-1} \ar[r]^{\varphi_{n-1}} & E_n
+%}.\]
+%with $E_0$, primitively $\mO_K$-oriented.
+%\item There exists an $\ell$-ladder of degree $q$:
+%\[\xymatrix{
+%E_0 \ar[d]^{\psi_0} \ar[r]^{\varphi_0} & E_1\ar[d]^{\psi_1} \ar[r]^{\varphi_{1}}& \cdots \ar[r]^{\varphi_{n-2}} & E_{n-1} \ar[d]^{\psi_{n-1}} \ar[r]^{\varphi_{n-1}} & E_n \ar[d]^{\psi_n}\\
+%F_0 \ar[r]^{\varphi'_0} & F_1 \ar[r]^{\varphi'_{1}}& \cdots \ar[r]^{\varphi'_{n-2}} & F_{n-1} \ar[r]^{\varphi'_{n-1}} & F_n
+%}\]
+%such that $F_i=[\mf{q}\cap\mO_i]\cdot E_i$ for all $i\in\i{0}{n}$.
+%\end{itemize}
+
+%\end{frame}
+
+%\begin{frame}
+%\textbf{How to compute the $\ell$-ladder:}
+%\[\xymatrix{
+%E_0 \ar[d]^{\psi_0} \ar[r]^{\varphi_0} & E_1\ar[d]^{\psi_1} \ar[r]^{\varphi_{1}}& \cdots \ar[r]^{\varphi_{n-2}} & E_{n-1} \ar[d]^{\psi_{n-1}} \ar[r]^{\varphi_{n-1}} & E_n \ar[d]^{\psi_n}\\
+%F_0 \ar[r]^{\varphi'_0} & F_1 \ar[r]^{\varphi'_{1}}& \cdots \ar[r]^{\varphi'_{n-2}} & F_{n-1} \ar[r]^{\varphi'_{n-1}} & F_n
+%}\]
+%such that $F_i=[\mf{q}\cap\mO_i]\cdot E_i$ for all $i\in\i{0}{n}$, when the chain above is known?
+
+%\vspace{0.5cm}
+
+%\pause
+
+%\begin{itemize}
+%\item Compute the first $F_i$ with V\'{e}lu's formulas.
+%\item Assuming $\Cl(\mO_K)=\{1\}$, trivial for $i=0$: $F_0=E_0$.
+%\item For $i\geq i_0$ (such that $[\mfq\cap\mO_i]^2\neq [1]$), $j(F_{i})$ is the unique solution of:
+%\[\left\{\begin{array}{c}
+%\Phi_\ell(j(F_{i-1}),x)=0\\
+%\Phi_q(j(E_{i}),x)=0.
+%\end{array}\right. \]
+%\end{itemize}
+
+%\end{frame}
+
+\begin{frame}
+\textbf{Computing the ideal class group action in OSIDH}
+
+\begin{columns}[t]
+\column{.5\textwidth}
 
 \begin{itemize}
-\item We set $\mO_i:=\Z+\ell^i\mO_K$ for all $i\in\i{0}{n}$.
-\item $q$: a splitting prime in $K$.
-\item $\mf{q}\subseteq \mO_K$: a prime ideal lying above $q$. 
-\item A descending $\ell$-isogeny chain:
-\[\xymatrix{
-E_0 \ar[r]^{\varphi_0} & E_1 \ar[r]^{\varphi_{1}}& \cdots \ar[r]^{\varphi_{n-2}} & E_{n-1} \ar[r]^{\varphi_{n-1}} & E_n
-}.\]
-with $E_0$, primitively $\mO_K$-oriented.
-\item There exists an $\ell$-ladder of degree $q$:
-\[\xymatrix{
-E_0 \ar[d]^{\psi_0} \ar[r]^{\varphi_0} & E_1\ar[d]^{\psi_1} \ar[r]^{\varphi_{1}}& \cdots \ar[r]^{\varphi_{n-2}} & E_{n-1} \ar[d]^{\psi_{n-1}} \ar[r]^{\varphi_{n-1}} & E_n \ar[d]^{\psi_n}\\
-F_0 \ar[r]^{\varphi'_0} & F_1 \ar[r]^{\varphi'_{1}}& \cdots \ar[r]^{\varphi'_{n-2}} & F_{n-1} \ar[r]^{\varphi'_{n-1}} & F_n
-}\]
-such that $F_i=[\mf{q}\cap\mO_i]\cdot E_i$ for all $i\in\i{0}{n}$.
+\item $\mO_i:=\Z+\ell^i\mO_K$ for all $i\in\N$.
+\item Represent an $\mO_n$-oriented elliptic curve $(E_n,\iota_n)$ by a descending $\ell$-isogeny chain $(E_i,\iota_i)_{0\leq i\leq n}$.
+\item Let $\mfq\subseteq \mO_K$ be a prime ideal.
+\item We compute the chain $(F_i,\iota'_i)_i:=[\mf{q}]\cdot (E_i,\iota_i)_i$:
+\[\forall 0\leq i\leq n, \ F_i:=[\mf{q}\cap\mO_i]\cdot E_i\]
+to get $F_n:=[\mf{q}\cap\mO_n]\cdot E_n$.
+% descending the ladder.
+\item Assumption: $\Cl(\mO_K)=\{1\}$, so that $E_0=F_0$.
+
 \end{itemize}
 
-\end{frame}
-
-\begin{frame}
-\textbf{How to compute the $\ell$-ladder:}
-\[\xymatrix{
-E_0 \ar[d]^{\psi_0} \ar[r]^{\varphi_0} & E_1\ar[d]^{\psi_1} \ar[r]^{\varphi_{1}}& \cdots \ar[r]^{\varphi_{n-2}} & E_{n-1} \ar[d]^{\psi_{n-1}} \ar[r]^{\varphi_{n-1}} & E_n \ar[d]^{\psi_n}\\
-F_0 \ar[r]^{\varphi'_0} & F_1 \ar[r]^{\varphi'_{1}}& \cdots \ar[r]^{\varphi'_{n-2}} & F_{n-1} \ar[r]^{\varphi'_{n-1}} & F_n
-}\]
-such that $F_i=[\mf{q}\cap\mO_i]\cdot E_i$ for all $i\in\i{0}{n}$, when the chain above is known?
-
-\vspace{0.5cm}
-
-\pause
-
-\begin{itemize}
-\item Compute the first $F_i$ with V\'{e}lu's formulas.
-\item Assuming $\Cl(\mO_K)=\{1\}$, trivial for $i=0$: $F_0=E_0$.
-\item For $i\geq i_0$ (such that $[\mfq\cap\mO_i]^2\neq [1]$), $j(F_{i})$ is the unique solution of:
-\[\left\{\begin{array}{c}
-\Phi_\ell(j(F_{i-1}),x)=0\\
-\Phi_q(j(E_{i}),x)=0.
-\end{array}\right. \]
-\end{itemize}
-
-\end{frame}
-
-\begin{frame}
-\textbf{Algorithmic way to compute the ideal class group action}
+\column{.5\textwidth}
 
 \definecolor{qqwuqq}{rgb}{0,0.39215686274509803,0}
 \definecolor{uuuuuu}{rgb}{0.26666666666666666,0.26666666666666666,0.26666666666666666}
 \definecolor{xdxdff}{rgb}{0.49019607843137253,0.49019607843137253,1}
 \definecolor{ududff}{rgb}{0.30196078431372547,0.30196078431372547,1}
+\definecolor{violet}{rgb}{0.29411765,0,0.50980392}
 
-\begin{figure}[!h]
-\centering
+%\begin{figure}[!h]
+%\centering
 
 \begin{tikzpicture}[line cap=round,line join=round,>=triangle 45,x=1cm,y=1cm,scale=0.5]
-\clip(-4,-10.223333333333263) rectangle (7.5,3);
-\draw [shift={(0,0)},line width=1pt,color=qqwuqq,fill=qqwuqq,fill opacity=0.10000000149011612] (0,0) -- (-89.9728461641534:1.8) arc (-89.9728461641534:-67.61733060429108:1.8) -- cycle;
-\draw [line width=1pt,dash pattern=on 2pt off 5pt] (0,0) circle (1cm);
-\draw [line width=1pt,dash pattern=on 2pt off 5pt] (0,0) circle (2cm);
-\draw [line width=1pt,dash pattern=on 2pt off 5pt] (0,0) circle (9cm);
-\draw [line width=1pt,dash pattern=on 2pt off 5pt] (0,0) circle (10cm);
+\clip(-3,-10.223333333333263) rectangle (7.5,3);
+\draw [shift={(0,0)},line width=1pt,color=qqwuqq,fill=qqwuqq,fill opacity=0.10000000149011612] (0,0) -- (-89.9728461641534:5) arc (-89.9728461641534:-67.61733060429108:5) -- cycle;
+\draw [line width=1pt,dash pattern=on 2pt off 5pt,color=violet] (0,0) circle (1cm);
+\draw [line width=1pt,dash pattern=on 2pt off 5pt,color=violet] (0,0) circle (2cm);
+\draw [line width=1pt,dash pattern=on 2pt off 5pt,color=violet] (0,0) circle (9cm);
+\draw [line width=1pt,dash pattern=on 2pt off 5pt,color=violet] (0,0) circle (10cm);
 \draw [line width=1pt] (0,0)-- (0.004739238223284909,-9.99999887698099);
 \draw [line width=1pt] (0,0)-- (3.8079070583784587,-9.246612560000095);
-\draw [shift={(0,0)},->,line width=1pt,color=qqwuqq] (-89.9728461641534:1.8) arc (-89.9728461641534:-67.61733060429108:1.8);
+\draw [shift={(0,0)},->,line width=1pt,color=qqwuqq] (-89.9728461641534:5) arc (-89.9728461641534:-67.61733060429108:5);
 \begin{scriptsize}
 \draw [fill=ududff] (0,0) circle (2.5pt);
 \draw[color=ududff] (0.13,0.3666666666666649) node {$E_0$};
@@ -789,45 +863,59 @@ such that $F_i=[\mf{q}\cap\mO_i]\cdot E_i$ for all $i\in\i{0}{n}$, when the chai
 \draw [fill=uuuuuu] (0.0042653144009564175,-8.999998989282892) circle (2pt);
 \draw[color=uuuuuu] (-0.64,-8.633333333333274) node {$E_{n-1}$};
 \draw [fill=xdxdff] (3.8079070583784587,-9.246612560000095) circle (2.5pt);
-\draw[color=xdxdff] (5.5,-9.5) node {$\mathfrak{q}\cap\mO_n\cdot E_n$};
+\draw[color=xdxdff] (5.5,-9.5) node {$[\mathfrak{q}\cap\mO_n]\cdot E_n$};
 \draw [fill=uuuuuu] (0.3807907058378459,-0.9246612560000096) circle (2pt);
-\draw[color=uuuuuu] (1.7,-0.3333333333333304) node {$\mathfrak{q}\cap\mO_1\cdot E_1$};
+\draw[color=uuuuuu] (1.7,-0.3333333333333304) node {$[\mathfrak{q}\cap\mO_1]\cdot E_1$};
 \draw [fill=uuuuuu] (0.7615814116756918,-1.8493225120000192) circle (2pt);
-\draw[color=uuuuuu] (2.2,-1.5) node {$\mathfrak{q}\cap\mO_2\cdot E_2$};
+\draw[color=uuuuuu] (2.2,-1.5) node {$[\mathfrak{q}\cap\mO_2]\cdot E_2$};
 \draw [fill=uuuuuu] (3.427116352540613,-8.321951304000086) circle (2pt);
-\draw[color=uuuuuu] (5.5,-7.8) node {$\mathfrak{q}\cap\mO_{n-1}\cdot E_{n-1}$};
-\draw[color=qqwuqq] (0.5,-2.433333333333316) node {$\mathfrak{q}$};
+\draw[color=uuuuuu] (5.5,-7.8) node {$[\mathfrak{q}\cap\mO_{n-1}]\cdot E_{n-1}$};
+\draw[color=qqwuqq] (1,-5.4) node {$\mathfrak{q}$};
+\draw[color=violet] (1,1) node {$\mO_1$};
+\draw[color=violet] (2.2,1.2) node {$\mO_2$};
+\draw[color=violet] (2,-8.4) node {$\mO_{n-1}$};
+\draw[color=violet] (2,-9.5) node {$\mO_n$};
 \end{scriptsize}
 \end{tikzpicture}
 
-\caption{Action of the prime ideal $\mfq$ on the descending $\ell$-isogeny chain.}
-\end{figure}
-
+%\caption{Action of the prime ideal $\mfq$ on the descending $\ell$-isogeny chain.}
+%\end{figure}
+\end{columns}
 
 \end{frame}
 
 \section{The OSIDH protocol}
 
-\subsection{A broken naive Diffie Hellman protocol}
+\subsection{A broken naive Diffie-Hellman protocol}
 
-\begin{frame}
-\textbf{General parameters:}
-\vspace{0.5cm}
+%\begin{frame}
+%\textbf{General parameters:}
+%\vspace{0.5cm}
 
-\begin{itemize}
-\item $K$: quadratic imaginary field such that $\Cl(\mO_K)=\{1\}$.
-\item $\ell$: prime number.
-\item $\mO_i:=\mO_K+\ell^i$ for all $i\in\N$.
-\item $p$ does not split in $K$.
-\item $q_1, \cdots, q_t\neq \ell$ splitting primes in $K$.
-\item $\mfq_1, \cdots, \mfq_t$ primes of $\mO_K$ lying above $q_1, \cdots, q_t$.
-\item The $[\mfq_j\cap\mO_n]$ generate $\mO_n$.
-\end{itemize}
+%\begin{itemize}
+%\item $K$: quadratic imaginary field such that $\Cl(\mO_K)=\{1\}$.
+%\item $\ell$: prime number.
+%\item $\mO_i:=\Z+\ell^i\mO_K$ for all $i\in\N$.
+%\item $p$ does not split in $K$.
+%\item $q_1, \cdots, q_t\neq \ell$ splitting primes in $K$.
+%\item $\mfq_1, \cdots, \mfq_t$ primes of $\mO_K$ lying above $q_1, \cdots, q_t$.
+%\item The $[\mfq_j\cap\mO_n]$ generate $\Cl(\mO_n)$.
+%\end{itemize}
 
-\end{frame}
+%\end{frame}
 
 \begin{frame}
 \textbf{Naive Diffie-Hellman key exchange:}
+\vspace{0.5cm}
+
+\textbf{Public parameters:}
+\begin{itemize}
+\item $q_1, \cdots, q_t\neq \ell$ splitting primes in $K$.
+\item $\mfq_1, \cdots, \mfq_t$ primes of $\mO_K$ lying above $q_1, \cdots, q_t$.
+\item The $[\mfq_j\cap\mO_n]$ generate $\Cl(\mO_n)$.
+\item $(E_i)_{0\leq i\leq n}$ a public descending $\ell$-isogeny chain.
+\end{itemize}
+
 \vspace{0.5cm}
 
 \begin{figure}[!h]
@@ -835,7 +923,7 @@ such that $F_i=[\mf{q}\cap\mO_i]\cdot E_i$ for all $i\in\i{0}{n}$, when the chai
 
 \begin{tikzpicture}[scale=0.6]
   % Public parameter:
-  \node[draw=none,fill=none,align=center] (public) at (0,1) {\footnotesize Public parameters:\\\footnotesize $(E_i,\iota_i)_{0\leq i\leq n}, \ \mf{q}_1, \cdots, \mf{q}_t$};
+  %\node[draw=none,fill=none,align=center] (public) at (0,1) {\footnotesize Public parameters:\\\footnotesize $(E_i)_i, \ \mf{q}_1, \cdots, \mf{q}_t$};
   
   % Alice
   \node[draw] (Alice) at (-3,0) {Alice}; 
@@ -844,8 +932,8 @@ such that $F_i=[\mf{q}\cap\mO_i]\cdot E_i$ for all $i\in\i{0}{n}$, when the chai
   % Calculations of Alice
   \node[draw=none,fill=none,anchor=east] (asecret) at ($(Alice) + (0,-1)$) {\footnotesize $e_1,\cdots, e_t\in_R\i{-r}{r}$};
   \node[draw=none,fill=none,anchor=east] (asecretideal) at ($(Alice) + (0,-1.75)$) {\footnotesize $\mf{a}:=\prod_{j=1}^t\mf{q}_j^{e_j}$};
-  \node[draw=none,fill=none,anchor=east] (Apublic) at ($(Alice) + (0,-3)$) {\footnotesize $(E_{A,i},\iota_{A,i}):=[\mf{a}]\cdot (E_i,\iota_i)$};
-  \node[draw=none,fill=none,anchor=east] (akey) at ($(Alice) + (1,-5)$) {\footnotesize $(E_{AB,i},\iota_{AB,i}):= [\mf{a}]\cdot (E_{B,i},\iota_{B,i})$};
+  \node[draw=none,fill=none,anchor=east] (Apublic) at ($(Alice) + (0,-3)$) {\footnotesize $(E_{A,i})_i:=[\mf{a}]\cdot (E_i)_i$};
+  \node[draw=none,fill=none,anchor=east] (akey) at ($(Alice) + (1,-5)$) {\footnotesize $(E_{AB,i})_i:= [\mf{a}]\cdot (E_{B,i})_i$};
     
   % Bob
   \node[draw] (Bob) at (3,0) {Bob}; 
@@ -854,16 +942,16 @@ such that $F_i=[\mf{q}\cap\mO_i]\cdot E_i$ for all $i\in\i{0}{n}$, when the chai
   % Calculations of Bob
   \node[draw=none,fill=none,anchor=west] (bsecret) at ($(Bob) + (0,-1)$) {\footnotesize $f_1,\cdots, f_t\in_R\i{-r}{r}$};
    \node[draw=none,fill=none,anchor=west] (bsecretideal) at ($(Bob) + (0,-1.75)$) {\footnotesize $\mf{b}:=\prod_{j=1}^t\mf{q}_j^{f_j}$};
-  \node[draw=none,fill=none,anchor=west] (Bpublic) at ($(Bob) + (0,-4)$) {\footnotesize $(E_{B,i},\iota_{B,i}):=[\mf{b}]\cdot (E_i,\iota_i)$};
-  \node[draw=none,fill=none,anchor=west] (bkey) at ($(Bob) + (-1,-5)$) {\footnotesize $(E_{AB,i},\iota_{AB,i}):= [\mf{b}]\cdot (E_{A,i},\iota_{A,i})$};
+  \node[draw=none,fill=none,anchor=west] (Bpublic) at ($(Bob) + (0,-4)$) {\footnotesize $(E_{B,i})_i:=[\mf{b}]\cdot (E_i)_i$};
+  \node[draw=none,fill=none,anchor=west] (bkey) at ($(Bob) + (-1,-5)$) {\footnotesize $(E_{AB,i})_i:= [\mf{b}]\cdot (E_{A,i})_i$};
    
   % Messages
-  \draw[->,thick] ($(Alice)+(0,-3)$) -- ($(Bob)+(0,-3)$) node [pos=0.5,above,font=\footnotesize] {\footnotesize $(E_{A,i},\iota_{B,i})_{0\leq i\leq n}$};
-  \draw[->,thick] ($(Bob)+(0,-4)$) -- ($(Alice)+(0,-4)$) node [pos=0.5,above,font=\footnotesize] {\footnotesize $(E_{B,i},\iota_{B,i})_{0\leq i\leq n}$};
+  \draw[->,thick] ($(Alice)+(0,-3)$) -- ($(Bob)+(0,-3)$) node [pos=0.5,above,font=\footnotesize] {\footnotesize $(E_{A,i})_i$};
+  \draw[->,thick] ($(Bob)+(0,-4)$) -- ($(Alice)+(0,-4)$) node [pos=0.5,above,font=\footnotesize] {\footnotesize $(E_{B,i})_i$};
     
 \end{tikzpicture}
 
-\caption{The naive OSIDH protocol.}
+\caption{Naive protocol.}
 \end{figure}
 
 \end{frame}
@@ -871,58 +959,66 @@ such that $F_i=[\mf{q}\cap\mO_i]\cdot E_i$ for all $i\in\i{0}{n}$, when the chai
 \subsection{Why is it broken?}
 
 \begin{frame}
-\textbf{Attack on the $\ell$-ladder:}
+\textbf{Attack on the $\ell$-ladder}\footnote[frame]{Cl\`{o} and Kohel.}
 
-\vspace{0.5cm}
+\begin{columns}[t]
+\column{.7\textwidth}
 
 \begin{itemize}
-\item Given the descending $\ell$-ladder:
-\[\xymatrix{
-E_0 \ar[d]^{\psi_0} \ar[r]^{\varphi_0} & E_1\ar[d]^{\psi_1} \ar[r]^{\varphi_{1}}& \cdots \ar[r]^{\varphi_{n-2}} & E_{n-1} \ar[d]^{\psi_{n-1}} \ar[r]^{\varphi_{n-1}} & E_n \ar[d]^{\psi_n}\\
-F_0 \ar[r]^{\varphi'_0} & F_1 \ar[r]^{\varphi'_{1}}& \cdots \ar[r]^{\varphi'_{n-2}} & F_{n-1} \ar[r]^{\varphi'_{n-1}} & F_n
+\item Given $(E_i)_{i}$ and $(F_i)_i:=[\mf{a}]\cdot (E_i)_i$, we recover $[\mf{a}\cap\mO_n]\in\Cl(\mO_n)$
+
+\item Knowing $\mf{a}_i\subseteq \mO_K$, such that $[\mf{a}_i\cap\mO_i]=[\mf{a}\cap \mO_i]$, we look for:
+\[\mf{a}_{i+1}:=\mf{a}_i\cdot \mf{b}\]
+with $[\mf{b}\cap\mO_{i+1}]\in\ker(\Cl(\mO_{i+1})\relbar\joinrel\twoheadrightarrow\Cl(\mO_{i}))$ such that:
+\[[(\mf{a}_i\cdot \mf{b})\cap\mO_{i+1}]\cdot E_{i+1}=F_{i+1}\]
+
+\item $|\ker(\Cl(\mO_{i+1})\relbar\joinrel\twoheadrightarrow\Cl(\mO_{i}))|\leq\ell+1$, so we have a few $\mf{b}$ to test.
+\end{itemize}
+\column{.3\textwidth}
+
+\[\xymatrix@C+1pc{
+E_0 \ar[d] \ar@2{-}[r]& F_0\ar[d]\\
+\vdots \ar[d] & \vdots \ar[d]\\
+E_i \ar[d] \ar[r]^{\mf{a}_i} & F_i\ar[d]\\
+E_{i+1} \ar[d] \ar@{-->}[r]^{\mf{a}_{i+1}:=\mf{a}_i\cdot\mf{b}} & F_{i+1}\ar[d]\\
+\vdots & \vdots\\
 }\]
-with $F_i:=[\mf{a}\cap \mO_i]\cdot E_i$ for all $i\in\i{0}{n}$, one can recover $[\mf{a}\cap \mO_n]\in\Cl(\mO_n)$.
-
-\item Knowing $\mf{a}_i\subseteq \mO_K$, such that $[\mf{a}_i\cap\mO_i]=[\mf{a}\cap \mO_i]$, we get:
-\[[\mf{a}_{i+1}\cap\mO_{i+1}]:=[\mf{a}\cap \mO_{i+1}]=[\mf{a}_i\cap\mO_{i+1}]\cdot[\mf{b}]\]
-with $[\mf{b}]\in\ker(\Cl(\mO_{i+1})\relbar\joinrel\twoheadrightarrow\Cl(\mO_{i}))$ and:
-\[[\mf{a}_i\cap\mO_{i+1}]\cdot[\mf{b}]\cdot E_{i+1}=F_{i+1}\]
-\end{itemize}
+\end{columns}
 
 \end{frame}
 
+%\begin{frame}
+
+%\textbf{Attack on the $\ell$-ladder:}
+
+%\vspace{0.5cm}
+
+
+%\begin{itemize}
+%\item We have:
+%\[|\ker(\Cl(\mO_{i+1})\relbar\joinrel\twoheadrightarrow\Cl(\mO_{i}))|=\left\{ \begin{array}{cc} 
+%\ell & \mbox{if } i\geq 1\\
+%\frac{1}{[\mO_K^\times:\mO_1^\times]}\(\ell-\(\frac{\Delta_K}{\ell}\)\) & \mbox{if } i=0
+%\end{array}\right.\]
+
+%\item So we should test if:
+%\[[\mf{a}_i\cap\mO_{i+1}]\cdot[\mf{b}]\cdot E_{i+1}=F_{i+1}\]
+%for at most $\ell+1$ values of $[\mf{b}]$.
+%\end{itemize}
+
+
+%\end{frame}
+
+\subsection{The OSIDH protocol}
+
 \begin{frame}
-
-\textbf{Attack on the $\ell$-ladder:}
-
-\vspace{0.5cm}
-
-
-\begin{itemize}
-\item We have:
-\[|\ker(\Cl(\mO_{i+1})\relbar\joinrel\twoheadrightarrow\Cl(\mO_{i}))|=\left\{ \begin{array}{cc} 
-\ell & \mbox{if } i\geq 1\\
-\frac{1}{[\mO_K^\times:\mO_1^\times]}\(\ell-\(\frac{\Delta_K}{\ell}\)\) & \mbox{if } i=0
-\end{array}\right.\]
-
-\item So we should test if:
-\[[\mf{a}_i\cap\mO_{i+1}]\cdot[\mf{b}]\cdot E_{i+1}=F_{i+1}\]
-for at most $\ell+1$ values of $[\mf{b}]$.
-\end{itemize}
-
-
-\end{frame}
-
-\subsection{A fixed Diffie Hellman protocol}
-
-\begin{frame}
-\textbf{Idea for a secure OSIDH:} same protocol without descending $\ell$-isogeny chain exchange.
+\textbf{Idea of OSIDH:} same Diffie-Hellman protocol without descending $\ell$-isogeny chain exchange.
 
 \vspace{0.5cm}
 
 \begin{itemize}
 \item Instead of exchanging:
-\[(E_{A,i},\iota_{A,i})_{i}:=[\mf{a}]\cdot (E_i,\iota_i)_{i} \quad \mbox{and} \quad (E_{B,i},\iota_{A,i})_{i}:=[\mf{b}]\cdot (E_i,\iota_i)_{i}\]
+\[(E_{A,i})_{i}:=[\mf{a}]\cdot (E_i)_{i} \quad \mbox{and} \quad (E_{B,i})_{i}:=[\mf{b}]\cdot (E_i)_{i}\]
 
 \pause 
 \item Exchange:
@@ -937,21 +1033,10 @@ for all $j\in\i{1}{t}$.
 
 \end{frame}
 
-\begin{frame}
-\textbf{Example:} Bob computes $E_{AB,n}=[\mf{b}]\cdot E_{A,n}$ with $[\mf{b}]=[\mf{q}_1]^{f_1}[\mf{q}_2]^{f_2}$.
 
-\[\xymatrix{
-[\mf{q}_2]^{f_2}\cdot E_{A,n}  \ar[r] & [\mf{q}_1][\mf{q}_2]^{f_2}\cdot E_{A,n} \ar[r] & \cdots \ar[r] & [\mf{q}_1]^{f_1}[\mf{q}_2]^{f_2}\cdot E_{A,n}\\
-[\mf{q}_2]^{f_2-1}\cdot E_{A,n}  \ar[u] \ar[r] & [\mf{q}_1][\mf{q}_2]^{f_2-1}\cdot E_{A,n} \ar[u] \ar[r] & \cdots \ar[r] & [\mf{q}_1]^{f_1}[\mf{q}_2]^{f_2-1}\cdot E_{A,n}\ar[u]\\
-\vdots \ar[u] & \vdots \ar[u] & \ddots & \vdots \ar[u]\\
-[\mf{q}_2]\cdot E_{A,n}  \ar[u] \ar[r] & [\mf{q}_1][\mf{q}_2]\cdot E_{A,n} \ar[u]\ar[r] & \cdots \ar[r] & [\mf{q}_1]^{f_1}[\mf{q}_2]\cdot E_{A,n} \ar[u] \\
-E_{A,n} \ar[u]^{q_2} \ar[r]^{q_1} & [\mf{q}_1]\cdot E_{A,n} \ar[u] \ar[r] & \cdots  \ar[r] & [\mf{q}_1]^{f_1}\cdot E_{A,n}. \ar[u]
-}\]
-
-\end{frame}
 
 \begin{frame}
-\textbf{The protocol:}
+\textbf{The protocol}\footnote[frame]{Cl\`{o} and Kohel.}
 \vspace{0.5cm}
 
 \begin{figure}[!h]
@@ -959,7 +1044,7 @@ E_{A,n} \ar[u]^{q_2} \ar[r]^{q_1} & [\mf{q}_1]\cdot E_{A,n} \ar[u] \ar[r] & \cdo
 
 \begin{tikzpicture}[scale=0.6]
   % Public parameter:
-  \node[draw=none,fill=none,align=center] (public) at (0,1) {\footnotesize Public parameters:\\\footnotesize $(E_i,\iota_i)_{0\leq i\leq n}, \ \mf{q}_1, \cdots, \mf{q}_t$};
+  \node[draw=none,fill=none,align=center] (public) at (0,1) {\footnotesize Public parameters:\\\footnotesize $(E_i)_i, \ \mf{q}_1, \cdots, \mf{q}_t$};
   
   % Alice
   \node[draw] (Alice) at (-3.5,0) {Alice}; 
@@ -968,7 +1053,7 @@ E_{A,n} \ar[u]^{q_2} \ar[r]^{q_1} & [\mf{q}_1]\cdot E_{A,n} \ar[u] \ar[r] & \cdo
   % Calculations of Alice
   \node[draw=none,fill=none,anchor=east] (asecret) at ($(Alice) + (0,-1)$) {\footnotesize $e_1,\cdots, e_t\in_R\i{-r}{r}$};
   \node[draw=none,fill=none,anchor=east] (asecretideal) at ($(Alice) + (0,-1.75)$) {\footnotesize $\mf{a}:=\prod_{j=1}^t\mf{q}_j^{e_j}$};
-  \node[draw=none,fill=none,anchor=east] (Apublic) at ($(Alice) + (0,-3)$) {\footnotesize $(E_{A,i},\iota_{A,i}):=[\mf{a}]\cdot (E_i,\iota_i)$};
+  \node[draw=none,fill=none,anchor=east] (Apublic) at ($(Alice) + (0,-3)$) {\footnotesize $(E_{A,i})_i:=[\mf{a}]\cdot (E_i)_i$};
   \node[draw=none,fill=none,anchor=east] (akey) at ($(Alice) + (0,-5)$) {\footnotesize $E_{AB,n}:= [\mf{a}]\cdot E_{B,n}$};
     
   % Bob
@@ -978,7 +1063,7 @@ E_{A,n} \ar[u]^{q_2} \ar[r]^{q_1} & [\mf{q}_1]\cdot E_{A,n} \ar[u] \ar[r] & \cdo
   % Calculations of Bob
   \node[draw=none,fill=none,anchor=west] (bsecret) at ($(Bob) + (0,-1)$) {\footnotesize $f_1,\cdots, f_t\in_R\i{-r}{r}$};
    \node[draw=none,fill=none,anchor=west] (bsecretideal) at ($(Bob) + (0,-1.75)$) {\footnotesize $\mf{b}:=\prod_{j=1}^t\mf{q}_j^{f_j}$};
-  \node[draw=none,fill=none,anchor=west] (Bpublic) at ($(Bob) + (0,-4)$) {\footnotesize $(E_{B,i},\iota_{B,i}):=[\mf{b}]\cdot (E_i,\iota_i)$};
+  \node[draw=none,fill=none,anchor=west] (Bpublic) at ($(Bob) + (0,-4)$) {\footnotesize $(E_{B,i})_i:=[\mf{b}]\cdot (E_i)_i$};
   \node[draw=none,fill=none,anchor=west] (bkey) at ($(Bob) + (0,-5)$) {\footnotesize $E_{AB,n}:= [\mf{b}]\cdot E_{A,n}$};
    
   % Messages
@@ -998,12 +1083,12 @@ E_{A,n} \ar[u]^{q_2} \ar[r]^{q_1} & [\mf{q}_1]\cdot E_{A,n} \ar[u] \ar[r] & \cdo
 \subsection{Recovering the chain with oriented endomorphisms}
 
 \begin{frame}
-\textbf{Recovering the chain with oriented endomorphisms}
+\textbf{Recovering the chain with oriented endomorphisms}\footnote[frame]{Onuki (2020).}
 
 \vspace{0.5cm}
 
 \begin{itemize}
-\item Given $(E_i,\iota_i)_{i}$ and $(F_i,\iota'_i)_{i}:=[\mf{a}]\cdot(E_i,\iota_i)_{i}$, we can recover the secret $[\mf{a}]\in\Cl(\mO_n)$.
+\item Given $(E_i)_{i}$ and $(F_i)_{i}:=[\mf{a}]\cdot(E_i)_{i}$, we can recover the secret $[\mf{a}]\in\Cl(\mO_n)$.
 
 \pause
 
@@ -1088,7 +1173,7 @@ with $e_1,\cdots, e_t\in\i{-2r}{2r}$, so that  $\iota'_n(\beta)$ can be inferred
 \vspace{0.3cm}
 
 \begin{itemize}
-\item The relations lattice $L$ is easy to compute because computing discrete logarithms is easy in $\Cl(\mO_n)$.
+\item The relations lattice $L$ can be computed in polynomial time (in $n$ and $t$) because discrete logarithms are easy to compute in $\Cl(\mO_n)$.
 
 \pause 
 
@@ -1104,7 +1189,7 @@ Heuristically, we have:
 covers $\Cl(\mO_n)$, then $|\Cl(\mO_n)|\leq (2r+1)^t$ and:
 \[\lambda_1^{(\infty)}(L)<2r\]
 
-\item Finding a short vector is efficient with BKZ.
+\item Finding a short vector is exponential but practical with BKZ.
 \end{itemize}
 \end{frame}
 
@@ -1133,16 +1218,14 @@ covers $\Cl(\mO_n)$, then $|\Cl(\mO_n)|\leq (2r+1)^t$ and:
 \end{frame}
 
 \begin{frame}
-\textbf{Can we upgrade the attack?} 
+\textbf{Can we scale up the attack?} 
 
 \vspace{0.5cm}
 
 \textbf{Testing lattice reduction:} $\ell=2$, $n=256$,$t=74$, $r=5$ and $K=\Q(i)$.
 
 \begin{itemize}
-\item Relations lattice computation: 2h31.
-\item Could have been reduced to 1h04 (knowing that $\Cl(\mO_n)$ is cyclic and generated by $\mf{q}_1$).
-\pause
+\item Relations lattice computation: 1h04.
 \item Finding a short vector with BKZ: 0.5s.
 \item Shortest vector:
 \begin{align*}u:=&(-4, 1, 4, 4, -3, 1, 3, 5, 5, 2, 9, 5, 3, 5, -1, 5, -7, 2, -3, 5, 3, -3, 2,\\
@@ -1168,7 +1251,7 @@ $\|u\|_\infty=9<2r$.
 \item Drawbacks of method 1:
 \begin{itemize}
 \item Increases the protocol complexity by a lot.
-\item Diversity: the security reduces to a lattice problem.
+\item Diversity: the security relies on a lattice problem.
 \end{itemize}
 \pause
 \item Drawback of method 2: reduces the key space:
@@ -1180,16 +1263,14 @@ This impedes other cryptographic constructions.
 \section{Conclusion}
 
 \begin{frame}
-\textbf{To sum up:}
+\textbf{To sum up:} Our attack significantly undermines OSIDH:
 
 \vspace{0.3cm}
 
 \begin{itemize}
-\item A "good idea" based on cryptographic group actions.
+\item Either OSIDH becomes an inefficient lattice based protocol.
 
-\item But inefficient in practice.
-
-\item And not safe even against classical computers.
+\item Or it no longer satisfies the hypothesis of a cryptographic group action (key space too small).
 
 \end{itemize}
 
@@ -1201,12 +1282,29 @@ This impedes other cryptographic constructions.
 \vspace{0.3cm}
 
 \begin{itemize}
-\item Improve the protocol implementation to upgrade the attack.
+\item Improve the protocol implementation to scale up the attack.
 
-\item Try to generalize our method to find a complete attack.
+\item Find a complete cryptanalysis (without countermeasures).
 
 \item Or look for other constructions with the OSIDH framework that can work with a small key space. 
 \end{itemize}
+\end{frame}
+
+\appendix
+
+\section{Questions}
+
+\begin{frame}
+\textbf{Example:} Bob computes $E_{AB,n}=[\mf{b}]\cdot E_{A,n}$ with $[\mf{b}]=[\mf{q}_1]^{f_1}[\mf{q}_2]^{f_2}$.
+
+\[\xymatrix{
+[\mf{q}_2]^{f_2}\cdot E_{A,n}  \ar[r] & [\mf{q}_1][\mf{q}_2]^{f_2}\cdot E_{A,n} \ar[r] & \cdots \ar[r] & [\mf{q}_1]^{f_1}[\mf{q}_2]^{f_2}\cdot E_{A,n}\\
+[\mf{q}_2]^{f_2-1}\cdot E_{A,n}  \ar[u] \ar[r] & [\mf{q}_1][\mf{q}_2]^{f_2-1}\cdot E_{A,n} \ar[u] \ar[r] & \cdots \ar[r] & [\mf{q}_1]^{f_1}[\mf{q}_2]^{f_2-1}\cdot E_{A,n}\ar[u]\\
+\vdots \ar[u] & \vdots \ar[u] & \ddots & \vdots \ar[u]\\
+[\mf{q}_2]\cdot E_{A,n}  \ar[u] \ar[r] & [\mf{q}_1][\mf{q}_2]\cdot E_{A,n} \ar[u]\ar[r] & \cdots \ar[r] & [\mf{q}_1]^{f_1}[\mf{q}_2]\cdot E_{A,n} \ar[u] \\
+E_{A,n} \ar[u]^{q_2} \ar[r]^{q_1} & [\mf{q}_1]\cdot E_{A,n} \ar[u] \ar[r] & \cdots  \ar[r] & [\mf{q}_1]^{f_1}\cdot E_{A,n}. \ar[u]
+}\]
+
 \end{frame}
 
 \end{document}
